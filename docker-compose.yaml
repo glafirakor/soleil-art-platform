@@ -1,0 +1,60 @@
+services:
+  proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - salon_net
+
+  frontend:
+    image: soleil-frontend:latest
+    build: ./frontend
+    networks:
+      - salon_net
+
+  backend:
+    image: soleil-backend:latest
+    build: ./backend
+    environment:
+      - REDIS_HOST=redis
+      - DB_HOST=db
+      - DB_NAME=artgallery
+      - DB_USER=curator
+      - DB_PASS=secretpass
+    depends_on:
+      - redis
+      - db
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+    networks:
+      - salon_net
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - salon_net
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=artgallery
+      - POSTGRES_USER=curator
+      - POSTGRES_PASSWORD=secretpass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - salon_net
+
+volumes:
+  pgdata:
+
+networks:
+  salon_net:
+    driver: bridge

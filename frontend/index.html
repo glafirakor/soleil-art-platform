@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOLEIL — The Light of Rare Art</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link href="https://googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #F9F8F6; --card: #FFFFFF; --text: #111111; --muted: #6A665F; --accent: #8C734B; --border: #E5E2DC; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-weight: 300; line-height: 1.6; }
+        .top-bar { background: #111111; color: #E6E1D8; text-align: center; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; padding: 10px 16px; }
+        header { max-width: 1320px; margin: 0 auto; padding: 28px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+        .brand { font-family: 'Cormorant Garamond', serif; font-size: 34px; letter-spacing: 7px; text-transform: uppercase; font-weight: 600; cursor: pointer; }
+        .brand span { display: block; font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 3.5px; color: var(--muted); font-weight: 400; margin-top: 2px; }
+        .nav-tabs { display: flex; gap: 32px; }
+        .nav-tab { background: none; border: none; border-bottom: 1.5px solid transparent; padding: 8px 2px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+        .nav-tab.active, .nav-tab:hover { color: var(--text); border-bottom-color: var(--accent); }
+        .bag-btn { background: transparent; border: 1px solid var(--text); padding: 10px 22px; font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
+        .bag-btn:hover { background: var(--text); color: #FFF; }
+        .hero { max-width: 820px; margin: 54px auto 36px; text-align: center; padding: 0 24px; }
+        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 46px; font-weight: 400; line-height: 1.15; margin-bottom: 14px; }
+        .hero p { color: var(--muted); font-size: 15px; }
+        /* Баннер анонса закрытого дропа */
+        .drop-banner-box { display: none; max-width: 1272px; margin: 0 auto 44px; background: var(--card); border: 1px solid var(--accent); padding: 32px 36px; }
+        .drop-banner-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+        .drop-label { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 6px; }
+        .drop-countdown { font-family: 'Cormorant Garamond', serif; font-size: 40px; letter-spacing: 3px; color: var(--text); }
+        .drop-note { max-width: 520px; font-size: 13px; color: var(--muted); }
+        .controls { max-width: 1320px; margin: 0 auto 36px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .filters { display: flex; gap: 10px; flex-wrap: wrap; }
+        .filter-btn { background: transparent; border: 1px solid var(--border); padding: 8px 18px; font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); cursor: pointer; }
+        .filter-btn.active, .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+        .artist-select { padding: 9px 16px; border: 1px solid var(--border); background: var(--card); font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); cursor: pointer; min-width: 240px; }
+        .artist-bio-card { display: none; max-width: 1272px; margin: 0 auto 40px; background: var(--card); border: 1px solid var(--accent); padding: 28px 34px; }
+        .artist-bio-card h2 { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; margin-bottom: 4px; }
+        .artist-bio-meta { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+        .artist-bio-text { font-size: 14px; color: var(--muted); max-width: 900px; }
+        .catalog { max-width: 1320px; margin: 0 auto 88px; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(370px, 1fr)); gap: 36px; }
+        .lot-card { background: var(--card); border: 1px solid var(--border); padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.3s ease; }
+        .lot-card:hover { transform: translateY(-4px); }
+        .lot-img-wrap { width: 100%; height: 300px; background: #F1EFEA; margin-bottom: 20px; overflow: hidden; position: relative; cursor: pointer; }
+        .lot-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .lot-img-wrap:hover img { transform: scale(1.03); }
+        .lot-badge { position: absolute; top: 12px; left: 12px; background: rgba(17, 17, 17, 0.85); color: #F9F8F6; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 10px; }
+        .lot-badge.drop { background: var(--accent); color: #FFF; }
+        .lot-artist { font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; cursor: pointer; }
+        .lot-artist:hover { text-decoration: underline; }
+        .lot-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; margin-bottom: 10px; cursor: pointer; }
+        .lot-meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; border-top: 1px solid var(--border); padding-top: 12px; }
+        .lot-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border); }
+        .lot-price { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; }
+        .lot-price.upon-request { font-style: italic; font-weight: 400; color: var(--muted); font-size: 20px; }
+        .action-btn { background: var(--text); color: #FFF; border: none; padding: 10px 18px; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+        .action-btn:hover { background: var(--accent); }
+        .action-btn.outline { background: transparent; color: var(--text); border: 1px solid var(--text); }
+        .action-btn.outline:hover { background: var(--text); color: #FFF; }
+        /* Модальные окна */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(17,17,17,0.55); justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal { background: var(--card); max-width: 520px; width: 100%; padding: 36px; border: 1px solid var(--border); max-height: 90vh; overflow-y: auto; }
+        .modal.wide { max-width: 780px; }
+        .modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 30px; margin-bottom: 12px; }
+        .viewing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+        .viewing-grid img { width: 100%; max-height: 380px; object-fit: cover; border: 1px solid var(--border); }
+        .viewing-detail { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+        .viewing-detail strong { color: var(--text); font-weight: 500; display: block; font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 2px; }
+        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .modal input { width: 100%; padding: 12px; margin-top: 12px; border: 1px solid var(--border); font-family: inherit; font-size: 13px; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+        footer { background: #111111; color: #9E9A93; padding: 26px; text-align: center; font-size: 11px; letter-spacing: 2px; }
+        .telemetry { color: #C5A87E; margin-top: 6px; font-family: monospace; font-size: 11px; letter-spacing: 1px; }
+        @media (max-width: 700px) { .viewing-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="top-bar">Private Viewing & Curated Acquisitions · Authenticated Original Paintings</div>
+    <header>
+        <div class="brand" onclick="switchTab('catalog')">SOLEIL<span>The Light of Rare Art</span></div>
+        <nav class="nav-tabs">
+            <button class="nav-tab active" id="tab-catalog" onclick="switchTab('catalog')">Private Catalog</button>
+            <button class="nav-tab" id="tab-drop" onclick="switchTab('drop')">Upcoming Drops</button>
+        </nav>
+        <button class="bag-btn" onclick="openDossierModal()">Acquisition Dossier (<span id="cart-count">0</span>)</button>
+    </header>
+
+    <section class="hero">
+        <h1 id="hero-title">Curated Originals from Private World Collections</h1>
+        <p id="hero-desc">Select an artist to explore provenance and exhibition history, or submit a private acquisition request.</p>
+    </section>
+
+    <section class="drop-banner-box" id="drop-banner-box">
+        <div class="drop-banner-inner">
+            <div>
+                <div class="drop-label">Next Private Drop Session Opens In</div>
+                <div class="drop-countdown" id="drop-timer">02d : 14h : 39m : 59s</div>
+            </div>
+            <div class="drop-note">
+                High-demand museum-grade originals released in strictly timed online sessions. Register your collector credentials in advance to receive priority entry when bidding opens.
+            </div>
+        </div>
+    </section>
+
+    <div class="controls" id="catalog-controls">
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterByEra('ALL', this)">All Movements</button>
+            <button class="filter-btn" onclick="filterByEra('Abstract Expressionism', this)">Abstract Expressionism</button>
+            <button class="filter-btn" onclick="filterByEra('Impressionism', this)">Impressionism</button>
+            <button class="filter-btn" onclick="filterByEra('Post-Impressionism', this)">Post-Impressionism</button>
+            <button class="filter-btn" onclick="filterByEra('Modernism', this)">Modernism</button>
+        </div>
+        <select class="artist-select" id="artist-select" onchange="filterByArtist(this.value)">
+            <option value="ALL">Artist: All Masters</option>
+        </select>
+    </div>
+
+    <section class="artist-bio-card" id="artist-bio-card">
+        <h2 id="bio-name"></h2>
+        <div class="artist-bio-meta" id="bio-meta"></div>
+        <p class="artist-bio-text" id="bio-text"></p>
+    </section>
+
+    <main class="catalog" id="catalog"></main>
+
+    <div class="modal-overlay" id="viewing-modal">
+        <div class="modal wide">
+            <div class="viewing-grid" id="viewing-content"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="dossier-modal">
+        <div class="modal">
+            <h2 id="dossier-title">Acquisition Dossier</h2>
+            <div id="cart-list"></div>
+            <p id="total-row" style="margin-top:14px; font-weight:500;">Estimated Valuation: <span id="cart-total">€ 0</span></p>
+            <input type="text" id="client-name" placeholder="Full Name / Collector or Family Office">
+            <input type="email" id="client-email" placeholder="Private E-mail for Advisory Correspondence">
+            <div class="modal-actions">
+                <button class="action-btn" style="flex:1" onclick="submitInquiry()">Submit Request</button>
+                <button class="filter-btn" onclick="closeModal('dossier-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div>SOLEIL · PRIVATE FINE ART & AUCTION INFRASTRUCTURE</div>
+        <div class="telemetry" id="telemetry">SYSTEM STATUS: CONNECTING...</div>
+    </footer>
+    <script>
+        let allArtworks = [];
+        let artistsBio = {};
+        let dossier = [];
+        let currentSection = 'catalog';
+        let currentInquiryType = 'ACQUISITION';
+
+        async function loadArtworks() {
+            const res = await fetch('/api/artworks');
+            const data = await res.json();
+            allArtworks = data.items;
+            artistsBio = data.artists || {};
+            document.getElementById('telemetry').innerText =
+                'SYSTEM OPERATIONAL  ·  NODE: ' + data.node + '  ·  CACHE: ' + data.cache + '  ·  LATENCY: ' + data.latency_ms + ' ms';
+            populateArtists();
+            renderCurrentSection();
+        }
+
+        function switchTab(section) {
+            currentSection = section;
+            document.getElementById('tab-catalog').classList.toggle('active', section === 'catalog');
+            document.getElementById('tab-drop').classList.toggle('active', section === 'drop');
+            document.getElementById('drop-banner-box').style.display = section === 'drop' ? 'block' : 'none';
+            document.getElementById('catalog-controls').style.display = section === 'catalog' ? 'flex' : 'none';
+            document.getElementById('artist-bio-card').style.display = 'none';
+            if (section === 'drop') {
+                document.getElementById('hero-title').innerText = 'Upcoming Private Drops & Scheduled Releases';
+                document.getElementById('hero-desc').innerText = 'Preview rare museum-caliber works ahead of release and request priority access to the private bidding room.';
+            } else {
+                document.getElementById('hero-title').innerText = 'Curated Originals from Private World Collections';
+                document.getElementById('hero-desc').innerText = 'Select an artist to explore provenance and exhibition history, or submit a private acquisition request.';
+            }
+            renderCurrentSection();
+        }
+
+        function renderCurrentSection() {
+            renderLots(allArtworks.filter(function(item) { return item.section === currentSection; }));
+        }
+
+        function populateArtists() {
+            const select = document.getElementById('artist-select');
+            Object.keys(artistsBio).forEach(function(name) {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
+                select.appendChild(opt);
+            });
+        }
+
+        function renderLots(items) {
+            const container = document.getElementById('catalog');
+            container.innerHTML = items.map(function(lot) {
+                const badgeClass = lot.section === 'drop' ? 'lot-badge drop' : 'lot-badge';
+                const priceClass = lot.price === null ? 'lot-price upon-request' : 'lot-price';
+                let btnHtml = '';
+                if (lot.section === 'drop') {
+                    btnHtml = '<button class="action-btn outline" onclick="quickAction(' + lot.id + ', \'EARLY_ACCESS\')">Request Access</button>';
+                } else if (lot.price === null) {
+                    btnHtml = '<button class="action-btn outline" onclick="quickAction(' + lot.id + ', \'PRICE_INQUIRY\')">Inquire</button>';
+                } else {
+                    btnHtml = '<button class="action-btn" onclick="addToDossier(' + lot.id + ')">Acquire</button>';
+                }
+                return '<div class="lot-card">' +
+                    '<div>' +
+                        '<div class="lot-img-wrap" onclick="openViewingRoom(' + lot.id + ')">' +
+                            '<span class="' + badgeClass + '">' + lot.status + '</span>' +
+                            '<img src="' + lot.image + '" alt="' + lot.title + '">' +
+                        '</div>' +
+                        '<div class="lot-artist" onclick="selectArtistFromCard(\'' + lot.artist + '\')">' + lot.artist + ', ' + lot.year + '</div>' +
+                        '<div class="lot-title" onclick="openViewingRoom(' + lot.id + ')">' + lot.title + '</div>' +
+                        '<div class="lot-meta">' +
+                            '<div>' + lot.medium + '</div>' +
+                            '<div>Provenance: ' + lot.provenance.split(';')[0] + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="lot-footer">' +
+                        '<div class="' + priceClass + '">' + lot.price_label + '</div>' +
+                        btnHtml +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function openViewingRoom(id) {
+            const lot = allArtworks.find(function(l) { return l.id === id; });
+            if (!lot) return;
+            document.getElementById('viewing-content').innerHTML =
+                '<div><img src="' + lot.image + '" alt="' + lot.title + '"></div>' +
+                '<div>' +
+                    '<div class="lot-artist">' + lot.artist + ' (' + lot.year + ')</div>' +
+                    '<h2>' + lot.title + '</h2>' +
+                    '<div class="viewing-detail"><strong>Medium & Dimensions</strong>' + lot.medium + '</div>' +
+                    '<div class="viewing-detail"><strong>Provenance</strong>' + lot.provenance + '</div>' +
+                    '<div class="viewing-detail"><strong>Exhibited</strong>' + lot.exhibited + '</div>' +
+                    '<div class="viewing-detail"><strong>Valuation</strong>' + lot.price_label + '</div>' +
+                    '<div class="modal-actions">' +
+                        '<button class="action-btn" onclick="closeModal(\'viewing-modal\'); quickAction(' + lot.id + ', \'VIEWING_INQUIRY\')">Private Inquiry</button>' +
+                        '<button class="filter-btn" onclick="closeModal(\'viewing-modal\')">Close</button>' +
+                    '</div>' +
+                '</div>';
+            document.getElementById('viewing-modal').style.display = 'flex';
+        }
+
+        function selectArtistFromCard(name) {
+            if (currentSection !== 'catalog') switchTab('catalog');
+            document.getElementById('artist-select').value = name;
+            filterByArtist(name);
+            window.scrollTo({ top: 220, behavior: 'smooth' });
+        }
+
+        function filterByEra(era, btn) {
+            document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            document.getElementById('artist-select').value = 'ALL';
+            document.getElementById('artist-bio-card').style.display = 'none';
+            const base = allArtworks.filter(function(l) { return l.section === 'catalog'; });
+            if (era === 'ALL') renderLots(base);
+            else renderLots(base.filter(function(l) { return l.era === era; }));
+        }
+
+        function filterByArtist(name) {
+            document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+            const bioCard = document.getElementById('artist-bio-card');
+            if (name === 'ALL') {
+                bioCard.style.display = 'none';
+                renderCurrentSection();
+                return;
+            }
+            const info = artistsBio[name];
+            if (info) {
+                document.getElementById('bio-name').innerText = name;
+                document.getElementById('bio-meta').innerText = info.years + '  ·  ' + info.origin;
+                document.getElementById('bio-text').innerText = info.bio;
+                bioCard.style.display = 'block';
+            }
+            renderLots(allArtworks.filter(function(l) { return l.artist === name; }));
+        }
+
+        function addToDossier(id) {
+            const item = allArtworks.find(function(l) { return l.id === id; });
+            if (!dossier.find(function(c) { return c.id === id; })) {
+                dossier.push(item);
+                document.getElementById('cart-count').innerText = dossier.length;
+            }
+            openDossierModal();
+        }
+
+        function quickAction(id, type) {
+            const item = allArtworks.find(function(l) { return l.id === id; });
+            currentInquiryType = type;
+            const titles = {
+                'EARLY_ACCESS': 'Request Private Drop Access',
+                'PRICE_INQUIRY': 'Private Valuation Inquiry',
+                'VIEWING_INQUIRY': 'Private Advisory Inquiry'
+            };
+            document.getElementById('dossier-title').innerText = titles[type] || 'Private Inquiry';
+            document.getElementById('cart-list').innerHTML =
+                '<div class="cart-item"><span><strong>' + item.artist + '</strong> — ' + item.title + '</span><span>' + item.price_label + '</span></div>';
+            document.getElementById('total-row').style.display = 'none';
+            document.getElementById('dossier-modal').dataset.singleId = id;
+            document.getElementById('dossier-modal').style.display = 'flex';
+        }
+
+        function openDossierModal() {
+            currentInquiryType = 'ACQUISITION';
+            delete document.getElementById('dossier-modal').dataset.singleId;
+            document.getElementById('dossier-title').innerText = 'Acquisition Dossier';
+            document.getElementById('cart-list').innerHTML = dossier.length
+                ? dossier.map(function(c) { return '<div class="cart-item"><span>' + c.artist + ' — ' + c.title + '</span><span>' + c.price_label + '</span></div>'; }).join('')
+                : '<p style="color:#6A665F">Your acquisition dossier is currently empty.</p>';
+            const total = dossier.reduce(function(s, i) { return s + (i.price || 0); }, 0);
+            document.getElementById('cart-total').innerText = '€ ' + total.toLocaleString('en-US');
+            document.getElementById('total-row').style.display = dossier.length ? 'block' : 'none';
+            document.getElementById('dossier-modal').style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        async function submitInquiry() {
+            const client_name = document.getElementById('client-name').value;
+            const client_email = document.getElementById('client-email').value;
+            const singleId = document.getElementById('dossier-modal').dataset.singleId;
+            const itemsToSend = singleId
+                ? [allArtworks.find(function(l) { return l.id === Number(singleId); })]
+                : dossier;
+
+            if (!client_name || !client_email || !itemsToSend.length) {
+                return alert('Please provide your name, e-mail, and select an artwork.');
+            }
+            const res = await fetch('/api/inquire', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    inquiry_type: currentInquiryType,
+                    client_name: client_name,
+                    client_email: client_email,
+                    items: itemsToSend
+                })
+            });
+            const data = await res.json();
+            alert('Your request has been registered with SOLEIL Private Advisory.\nHandled by cluster node: ' + data.handled_by_node);
+            if (!singleId) {
+                dossier = [];
+                document.getElementById('cart-count').innerText = '0';
+            }
+            closeModal('dossier-modal');
+        }
+
+        let dropSeconds = 225599;
+        setInterval(function() {
+            if (dropSeconds > 0) dropSeconds--;
+            const d = String(Math.floor(dropSeconds / 86400)).padStart(2, '0');
+            const h = String(Math.floor((dropSeconds % 86400) / 3600)).padStart(2, '0');
+            const m = String(Math.floor((dropSeconds % 3600) / 60)).padStart(2, '0');
+            const s = String(dropSeconds % 60).padStart(2, '0');
+            const el = document.getElementById('drop-timer');
+            if (el) el.innerText = d + 'd : ' + h + 'h : ' + m + 'm : ' + s + 's';
+        }, 1000);
+
+        loadArtworks();
+
+</script>
+</body>
+</html>
